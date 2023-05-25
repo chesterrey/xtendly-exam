@@ -1,33 +1,25 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:xtendly_exam/sections/categories.dart';
+import 'package:xtendly_exam/sections/footer.dart';
 import 'package:xtendly_exam/sections/hero.dart';
 import 'package:xtendly_exam/sections/sales.dart';
-import 'package:xtendly_exam/widgets/button.dart';
-import 'package:xtendly_exam/widgets/category_card.dart';
 import 'package:xtendly_exam/widgets/navbar.dart';
-import 'package:xtendly_exam/widgets/product_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
     Key? key,
-    required this.title,
   }) : super(key: key);
-
-  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth > 1280) {
-            return const WideLayout();
-          } else {
-            return const NarrowLayout();
-          }
-        },
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 1280) {
+          return const WideLayout();
+        } else {
+          return const NarrowLayout();
+        }
+      },
     );
   }
 }
@@ -37,12 +29,17 @@ class NarrowLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        NarrowHero(),
-        NarrowCategories(),
-        NarrowSales(),
-      ],
+    return const Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: NarrowNavbar(),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: NarrowHero()),
+          SliverToBoxAdapter(child: NarrowCategories()),
+          SliverToBoxAdapter(child: NarrowSales()),
+          SliverToBoxAdapter(child: NarrowFooter()),
+        ],
+      ),
     );
   }
 }
@@ -52,12 +49,20 @@ class WideLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        WideHero(),
-        WideCategories(),
-        WideSales(),
-      ],
+    return Scaffold(
+      body: Stack(
+        children: const [
+          CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: WideHero()),
+              SliverToBoxAdapter(child: WideCategories()),
+              SliverToBoxAdapter(child: WideSales()),
+              SliverToBoxAdapter(child: WideFooter()),
+            ],
+          ),
+          WideNavbar(),
+        ],
+      ),
     );
   }
 }
